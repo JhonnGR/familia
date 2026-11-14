@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏠 Fondo Familiar Ramos Arrieta</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);min-height:100vh;color:#fff;padding:16px}
+    h1{text-align:center;font-size:1.9em;margin-bottom:4px;color:#FFD700;text-shadow:0 2px 10px rgba(255,215,0,.4)}
+    .sub{text-align:center;color:#aac4ff;margin-bottom:20px;font-size:.9em}
+
+    /* ── TABS ── */
+    .tabs{display:flex;justify-content:center;gap:7px;margin-bottom:20px;flex-wrap:wrap}
+    .tab-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);color:#fff;padding:9px 18px;border-radius:30px;cursor:pointer;font-size:.88em;transition:all .25s}
+    .tab-btn:hover,.tab-btn.activo{background:#FFD700;color:#1a1a2e;border-color:#FFD700;font-weight:700}
+    .seccion{display:none}.seccion.activa{display:block}
+
+    /* ── CARD ── */
+    .card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:20px;margin-bottom:18px}
+    .card h2{color:#FFD700;margin-bottom:12px;font-size:1.08em}
+
+    /* ── TABLE ── */
+    table{width:100%;border-collapse:collapse;font-size:.88em}
+    th{background:rgba(255,215,0,.18);color:#FFD700;padding:9px 7px;text-align:left}
+    td{padding:8px 7px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:middle}
+    tr:hover td{background:rgba(255,255,255,.04)}
+    .badge{border-radius:20px;padding:2px 10px;font-size:.78em}
+    .bh{background:#3a7bd5;color:#fff}.bm{background:#d53a7b;color:#fff}
+    .hijo-tag{color:#aaa;font-size:.78em}.nieto-tag{color:#80ffdb;font-size:.78em}
+    .ch{color:#60b4ff;font-weight:700}.cm{color:#ff80b4;font-weight:700}
+
+    .btn-del{background:rgba(255,80,80,.18);border:1px solid #ff5050;color:#ff8080;border-radius:7px;padding:3px 9px;cursor:pointer;font-size:.78em}
+    .btn-del:hover{background:rgba(255,80,80,.45)}
+
+    /* ── FORM ── */
+    .form-row{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-end;margin-top:14px}
+    .fg{display:flex;flex-direction:column;gap:4px}
+    .fg label{font-size:.8em;color:#aac4ff}
+    input[type=text],input[type=number],select{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:8px;padding:8px 11px;font-size:.88em;min-width:140px}
+    input[type=number]{min-width:90px}
+    input::placeholder{color:#aaa}
+    select option{background:#1a1a2e}
+    .btn-add{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;border:none;border-radius:10px;padding:9px 20px;font-weight:700;cursor:pointer;font-size:.9em;transition:transform .18s}
+    .btn-add:hover{transform:scale(1.05)}
+
+    /* ── MONTOS ── */
+    .montos-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+    .monto-box{border-radius:12px;padding:14px 16px;flex:1;min-width:130px;text-align:center;border:2px solid}
+    .monto-box.luz{border-color:#ffe600;background:rgba(255,230,0,.08)}
+    .monto-box.cable{border-color:#00c8ff;background:rgba(0,200,255,.08)}
+    .monto-box.cel{border-color:#00ff96;background:rgba(0,255,150,.08)}
+    .monto-box .mic{font-size:1.4em;margin-bottom:6px}
+    .monto-box label{display:block;font-size:.78em;color:#aaa;margin-bottom:5px}
+    .monto-box input{width:100%;text-align:center;font-size:1.1em;font-weight:700;min-width:unset;border-radius:8px}
+    .monto-box.luz input{color:#ffe600;border-color:#ffe600}
+    .monto-box.cable input{color:#00c8ff;border-color:#00c8ff}
+    .monto-box.cel input{color:#00ff96;border-color:#00ff96}
+
+    /* ── RESUMEN ── */
+    .rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:8px}
+    .ri{background:rgba(255,255,255,.06);border-radius:12px;padding:14px;text-align:center}
+    .ri .num{font-size:1.9em;font-weight:700;color:#FFD700}
+    .ri .et{font-size:.8em;color:#aac4ff;margin-top:3px}
+
+    /* ── RULETA ── */
+    .ruleta-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+    canvas{border-radius:50%;box-shadow:0 0 36px rgba(255,215,0,.4);max-width:340px;width:100%}
+    .puntero{font-size:2.4em;margin-top:-14px;filter:drop-shadow(0 -2px 5px rgba(255,100,0,.8));transform:rotate(180deg)}
+    .info{text-align:center;font-size:1.1em;font-weight:700;color:#FFD700;min-height:34px;padding:0 10px}
+    .btn-girar{background:linear-gradient(135deg,#ff6b35,#ff4500);color:#fff;border:none;border-radius:14px;padding:13px 38px;font-size:1.05em;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(255,100,0,.45);transition:transform .18s}
+    .btn-girar:hover{transform:scale(1.06)}
+    .btn-girar:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+    /* ── GASTO BUTTONS ── */
+    .gasto-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+    .gbtn{border-radius:12px;padding:11px 22px;font-weight:700;cursor:pointer;font-size:.95em;border:2px solid;transition:all .2s}
+    .gbtn.luz{border-color:#ffe600;background:rgba(255,230,0,.1);color:#ffe600}
+    .gbtn.cable{border-color:#00c8ff;background:rgba(0,200,255,.1);color:#00c8ff}
+    .gbtn.cel{border-color:#00ff96;background:rgba(0,255,150,.1);color:#00ff96}
+    .gbtn.activo-luz{background:#ffe600;color:#1a1a2e}
+    .gbtn.activo-cable{background:#00c8ff;color:#1a1a2e}
+    .gbtn.activo-cel{background:#00ff96;color:#1a1a2e}
+    .gbtn.hecho{opacity:.45;cursor:default;text-decoration:line-through}
+
+    /* ── RESULTADOS ── */
+    .res-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+    .res-box{background:rgba(255,255,255,.07);border-radius:13px;padding:14px 18px;text-align:center;min-width:150px;flex:1}
+    .res-box .rl{font-size:.82em;color:#aaa}
+    .res-box .rn{font-size:1.25em;font-weight:700;color:#fff;margin-top:4px}
+    .res-box .rm{font-size:.85em;margin-top:3px}
+    .res-box .rv{font-size:.72em;color:#80ffdb;margin-top:2px}
+    .rm.luz{color:#ffe600}.rm.cable{color:#00c8ff}.rm.cel{color:#00ff96}
+
+    /* ── VOLUNTARIO ── */
+    .vol-box{background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18);border-radius:11px;padding:11px 14px;margin-top:10px;display:none}
+    .vol-box label{font-size:.83em;color:#aac4ff;display:block;margin-bottom:5px}
+    .vol-sel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:8px;padding:7px 11px;font-size:.88em;width:100%;max-width:280px}
+    .vol-sel option{background:#1a1a2e}
+    .btn-vol{background:rgba(0,255,150,.13);border:1px solid #00ff96;color:#00ff96;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:.85em;font-weight:700;margin-top:7px;transition:background .18s}
+    .btn-vol:hover{background:rgba(0,255,150,.28)}
+
+    /* ── TURNO BANNER ── */
+    .turno-banner{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+    .turno-banner .tb-tit{color:#FFD700;font-size:.86em;font-weight:700;margin-bottom:8px}
+    .turno-chips{display:flex;gap:8px;flex-wrap:wrap}
+    .tc{border-radius:20px;padding:5px 14px;font-size:.84em;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);text-align:center}
+    .tc.ya{opacity:.35;text-decoration:line-through}
+    .tc .tcn{font-weight:700}
+    .tc .tcs{font-size:.72em;color:#aaa}
+
+    /* ── BTN GUARDAR MES ── */
+    .btn-save{background:linear-gradient(135deg,#00c8ff,#0070ff);color:#fff;border:none;border-radius:10px;padding:11px 24px;font-weight:700;cursor:pointer;font-size:.92em;margin-top:14px;display:block;width:100%;transition:transform .18s}
+    .btn-save:hover{transform:scale(1.02)}
+
+    /* ── HISTORIAL ── */
+    .mes-card{background:rgba(255,255,255,.05);border-radius:11px;padding:15px;margin-bottom:12px;border-left:4px solid #FFD700}
+    .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:4px}
+    .mh h3{color:#FFD700;font-size:1em}
+    .mrec{color:#80ffdb;font-size:.95em;margin-bottom:8px}
+    .schips{display:flex;gap:8px;flex-wrap:wrap}
+    .sc{border-radius:20px;padding:4px 12px;font-size:.82em;font-weight:700}
+    .sc-luz{background:rgba(255,230,0,.18);border:1px solid #ffe600;color:#ffe600}
+    .sc-cable{background:rgba(0,200,255,.18);border:1px solid #00c8ff;color:#00c8ff}
+    .sc-cel{background:rgba(0,255,150,.18);border:1px solid #00ff96;color:#00ff96}
+
+    /* ── CICLO ── */
+    .cc{display:inline-block;border-radius:12px;padding:2px 9px;font-size:.72em;margin:2px}
+    .cc-luz{background:rgba(255,230,0,.2);color:#ffe600}
+    .cc-cable{background:rgba(0,200,255,.2);color:#00c8ff}
+    .cc-cel{background:rgba(0,255,150,.2);color:#00ff96}
+
+    @media(max-width:600px){h1{font-size:1.4em}.form-row{flex-direction:column}input[type=text],select{min-width:100%}}
+  </style>
+</head>
+<body>
+
+<h1>🏠 Fondo Familiar Ramos Arrieta</h1>
+<p class="sub">Aportes mensuales · Sorteo con rotación justa · Sin internet</p>
+
+<div class="tabs">
+  <button class="tab-btn activo" onclick="tab('miembros',this)">👨‍👩‍👧‍👦 Miembros</button>
+  <button class="tab-btn" onclick="tab('config',this)">⚙️ Gastos</button>
+  <button class="tab-btn" onclick="tab('resumen',this)">💰 Resumen</button>
+  <button class="tab-btn" onclick="tab('sorteo',this)">🎡 Sorteo</button>
+  <button class="tab-btn" onclick="tab('historial',this)">📋 Historial</button>
+</div>
+
+<!-- MIEMBROS -->
+<div id="tab-miembros" class="seccion activa">
+  <div class="card">
+    <h2>👥 Participantes</h2>
+    <table><thead><tr><th>#</th><th>Nombre</th><th>Género</th><th>Tipo</th><th>Cuota</th><th>Gastos (últimos)</th><th></th></tr></thead>
+    <tbody id="tbody-m"></tbody></table>
+    <div class="form-row">
+      <div class="fg"><label>Nombre</label><input type="text" id="inp-n" placeholder="Nombre completo"/></div>
+      <div class="fg"><label>Género</label>
+        <select id="inp-g"><option value="H">👨 Hombre (S/100)</option><option value="M">👩 Mujer (S/50)</option></select></div>
+      <div class="fg"><label>Tipo</label>
+        <select id="inp-t"><option value="hijo">Hijo/a</option><option value="nieto">Nieto/a</option></select></div>
+      <button class="btn-add" onclick="addMiembro()">+ Agregar</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📌 Reglas</h2>
+    <ul style="line-height:2.1;padding-left:16px;color:#cce;font-size:.9em">
+      <li>✅ Los 9 hijos participan <strong>obligatoriamente</strong> cada mes.</li>
+      <li>⭐ Los nietos participan voluntariamente.</li>
+      <li>👨 Hombres S/100 · 👩 Mujeres S/50 de cuota mensual.</li>
+      <li>🎡 La ruleta tiene a <strong>todos los participantes</strong>. Se gira 3 veces (una por gasto).</li>
+      <li>🚫 Quien sale en un giro <strong>no puede salir en los siguientes</strong> del mismo mes.</li>
+      <li>🔄 Quien pagó un gasto en este ciclo <strong>no puede volver a pagarlo</strong> hasta completar el ciclo de 3 meses.</li>
+      <li>💝 El recaudo total de cuotas va a los <strong>padres</strong>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="tab-config" class="seccion">
+  <div class="card">
+    <h2>⚙️ Montos de los gastos fijos</h2>
+    <p style="color:#aac4ff;font-size:.85em;margin-bottom:14px">Edita el monto real de cada gasto. Se actualizan automáticamente.</p>
+    <div class="montos-grid">
+      <div class="monto-box luz"><div class="mic">⚡</div><label>Luz (S/)</label><input type="number" id="m-luz" min="0" step="1"/></div>
+      <div class="monto-box cable"><div class="mic">📺</div><label>Cable TV (S/)</label><input type="number" id="m-cable" min="0" step="1"/></div>
+      <div class="monto-box cel"><div class="mic">📱</div><label>Celular (S/)</label><input type="number" id="m-cel" min="0" step="1"/></div>
+    </div>
+    <button class="btn-add" style="margin-top:16px" onclick="saveMontos()">💾 Guardar montos</button>
+    <div id="montos-ok" style="color:#80ffdb;font-size:.85em;margin-top:8px;display:none">✅ Guardado.</div>
+  </div>
+
+  <div class="card" style="border-color:rgba(255,80,80,.3)">
+    <h2 style="color:#ff8080">🗑 Zona de reinicio</h2>
+    <p style="color:#aaa;font-size:.85em;margin-bottom:14px">
+      Usa esto solo si hay datos incorrectos de pruebas anteriores.<br>
+      <strong style="color:#ff8080">Borra el historial, los ciclos de gastos y el sorteo actual.</strong> Los nombres de los participantes y los montos se conservan.
+    </p>
+    <button onclick="resetearDatos()"
+      style="background:rgba(255,80,80,.18);border:2px solid #ff5050;color:#ff8080;border-radius:10px;
+             padding:10px 22px;cursor:pointer;font-weight:700;font-size:.92em;transition:background .2s"
+      onmouseover="this.style.background='rgba(255,80,80,.35)'"
+      onmouseout="this.style.background='rgba(255,80,80,.18)'">
+      🗑 Borrar historial y ciclos (mantener participantes)
+    </button>
+  </div>
+
+  <div class="card" style="border-color:rgba(0,200,255,.35)">
+    <h2 style="color:#00c8ff">☁️ Google Sheets en tiempo real</h2>
+    <p style="color:#aaa;font-size:.85em;margin-bottom:14px">
+      Envía <strong>todos los datos</strong> a Google Sheets ahora mismo: participantes, historial, ciclos y resumen.<br>
+      Cualquier familiar puede ver la hoja con solo abrir el enlace.
+    </p>
+    <button id="btn-sync" onclick="sincronizarTodo()"
+      style="background:rgba(0,200,255,.15);border:2px solid #00c8ff;color:#00c8ff;border-radius:10px;
+             padding:11px 24px;cursor:pointer;font-weight:700;font-size:.92em;transition:background .2s"
+      onmouseover="this.style.background='rgba(0,200,255,.3)'"
+      onmouseout="this.style.background='rgba(0,200,255,.15)'">
+      🔄 Sincronizar todo a Sheets ahora
+    </button>
+    <div id="sync-status" style="margin-top:10px;font-size:.88em;min-height:20px"></div>
+    <div style="margin-top:14px;padding:10px 14px;background:rgba(255,255,255,.05);border-radius:8px;font-size:.84em;color:#aaa;line-height:1.7">
+      📌 <strong style="color:#fff">Nota:</strong> Al guardar cada mes también se envía automáticamente.<br>
+      👁 Comparte la hoja con la familia desde Google Sheets → <em>Compartir</em>.
+    </div>
+  </div>
+</div>
+
+<!-- RESUMEN -->
+<div id="tab-resumen" class="seccion">
+  <div class="card"><h2>📅 Resumen del mes</h2><div class="rg" id="rg"></div></div>
+  <div class="card"><h2>🧾 Detalle cuotas</h2>
+    <table><thead><tr><th>Nombre</th><th>Género</th><th>Cuota</th></tr></thead><tbody id="tbody-r"></tbody></table>
+  </div>
+</div>
+
+<!-- SORTEO -->
+<div id="tab-sorteo" class="seccion">
+  <div class="card">
+    <h2>🎡 Sorteo — <span id="lbl-mes" style="color:#aac4ff;font-weight:normal"></span></h2>
+
+    <!-- INFO TURNO -->
+    <div id="turno-banner"></div>
+
+    <!-- PASO 1: elegir gasto -->
+    <p style="color:#aac4ff;font-size:.84em;margin-bottom:10px">
+      <strong>Paso 1:</strong> Elige el gasto a sortear. &nbsp;<strong>Paso 2:</strong> Gira la ruleta. &nbsp;Repite 3 veces.
+    </p>
+    <div class="gasto-btns">
+      <button class="gbtn luz"   id="gbtn-luz"   onclick="elegirGasto('luz')">⚡ Luz<br><span id="lbl-mluz"  style="font-size:.8em"></span></button>
+      <button class="gbtn cable" id="gbtn-cable" onclick="elegirGasto('cable')">📺 Cable<br><span id="lbl-mcable" style="font-size:.8em"></span></button>
+      <button class="gbtn cel"   id="gbtn-cel"   onclick="elegirGasto('cel')">📱 Celular<br><span id="lbl-mcel"   style="font-size:.8em"></span></button>
+    </div>
+
+    <!-- Voluntario -->
+    <div class="vol-box" id="vol-box">
+      <label id="vol-label">¿Alguien se ofrece voluntariamente?</label>
+      <select class="vol-sel" id="vol-sel"></select><br/>
+      <button class="btn-vol" onclick="confirmarVoluntario()">✋ Confirmar voluntario</button>
+    </div>
+
+    <!-- RULETA -->
+    <div class="ruleta-wrap" style="margin-top:16px">
+      <canvas id="canvas-ruleta" width="340" height="340"></canvas>
+      <div class="puntero">▼</div>
+      <div class="info" id="info-sorteo">Elige un gasto arriba para comenzar</div>
+      <button class="btn-girar" id="btn-girar" onclick="girar()" disabled>🎰 ¡Girar!</button>
+    </div>
+
+    <!-- Resultados -->
+    <h3 style="color:#FFD700;margin-top:22px;margin-bottom:10px">🏆 Resultado del mes</h3>
+    <div class="res-row" id="res-row"></div>
+
+    <button class="btn-save" onclick="guardarMes()">💾 Cerrar mes y guardar en historial</button>
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div id="tab-historial" class="seccion">
+  <div class="card"><h2>📋 Historial</h2><div id="hist-lista"><p style="color:#aaa;text-align:center;padding:20px">Sin registros aún.</p></div></div>
+  <div class="card">
+    <h2>🔄 Ciclo de gastos por persona</h2>
+    <p style="color:#aac4ff;font-size:.84em;margin-bottom:10px">Historial de qué gasto pagó cada persona. En un ciclo de 3 rondas no puede repetir.</p>
+    <div id="ciclo-tabla"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// CONSTANTES
+// ════════════════════════════════════════════════
+const GASTOS = ['luz','cable','cel'];
+const GL = { luz:'⚡ Luz', cable:'📺 Cable TV', cel:'📱 Celular' };
+
+// ════════════════════════════════════════════════
+// ESTADO — cargado desde localStorage
+// ════════════════════════════════════════════════
+let miembros = JSON.parse(localStorage.getItem('fm2_miembros') || 'null') || [
+  {id:1, nombre:"Zara Ramos Arrieta",     genero:"M", tipo:"hijo"},
+  {id:2, nombre:"Beronica Ramos Arrieta", genero:"M", tipo:"hijo"},
+  {id:3, nombre:"Silvia Ramos Arrieta",   genero:"M", tipo:"hijo"},
+  {id:4, nombre:"Silda Ramos Arrieta",    genero:"M", tipo:"hijo"},
+  {id:5, nombre:"Rosio Ramos Arrieta",    genero:"M", tipo:"hijo"},
+  {id:6, nombre:"Elmer Ramos Arrieta",    genero:"H", tipo:"hijo"},
+  {id:7, nombre:"Marco Ramos Arrieta",    genero:"H", tipo:"hijo"},
+  {id:8, nombre:"Yonatan Ramos Arrieta",  genero:"H", tipo:"hijo"},
+  {id:9, nombre:"Richard Ramos Arrieta",  genero:"H", tipo:"hijo"},
+  {id:10,nombre:"Jhonn Guerra Ramos",     genero:"H", tipo:"nieto"},
+];
+
+let montos  = JSON.parse(localStorage.getItem('fm2_montos') || 'null') || {luz:100,cable:50,cel:32};
+let historial = JSON.parse(localStorage.getItem('fm2_historial') || '[]');
+
+// gastosPorPersona: {id: ['luz','cable', ...]}  — historial acumulado
+let gxp = JSON.parse(localStorage.getItem('fm2_gxp') || '{}');
+
+// sorteoMes: {gasto: {id,nombre,modo,monto}}  ej: {luz:{id:1,nombre:'Zara',modo:'ruleta',monto:100}}
+let sorteoMes = JSON.parse(localStorage.getItem('fm2_sorteo') || '{}');
+
+// punteroGrupo: índice en miembros donde empieza el grupo que PUEDE salir este ciclo
+// (avanza 3 al guardar mes, controla la rotación de personas)
+let punteroGrupo = parseInt(localStorage.getItem('fm2_ptr') || '0');
+
+// Estado UI
+let gastoElegido = null;   // 'luz'|'cable'|'cel' — gasto que se está sorteando ahora
+let girando      = false;
+let angulo       = 0;
+
+const COLORES = [
+  "#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FFEAA7","#DDA0DD",
+  "#98D8C8","#F7DC6F","#BB8FCE","#85C1E9","#F0B27A","#82E0AA",
+  "#F1948A","#7FB3D3","#A9DFBF","#FAD7A0","#AED6F1","#A8E6CF",
+  "#FFD3A5","#C9B1D9"
+];
+
+// ════════════════════════════════════════════════
+// PERSISTENCIA
+// ════════════════════════════════════════════════
+function save() {
+  localStorage.setItem('fm2_miembros', JSON.stringify(miembros));
+  localStorage.setItem('fm2_montos',   JSON.stringify(montos));
+  localStorage.setItem('fm2_historial',JSON.stringify(historial));
+  localStorage.setItem('fm2_gxp',      JSON.stringify(gxp));
+  localStorage.setItem('fm2_sorteo',   JSON.stringify(sorteoMes));
+  localStorage.setItem('fm2_ptr',      String(punteroGrupo));
+}
+
+// ════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════
+function mesLabel() {
+  const M=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const h=new Date(); return `${M[h.getMonth()]} ${h.getFullYear()}`;
+}
+
+// IDs ya asignados en este mes (para excluirlos de la ruleta)
+function idsYaAsignados() {
+  return new Set(Object.values(sorteoMes).map(v => v.id));
+}
+
+// Participantes disponibles en la ruleta para el gasto actual:
+// — No pueden haber salido ya este mes
+// — No pueden haber pagado ESE gasto en su ciclo actual
+function disponiblesParaGasto(gasto) {
+  const yaEste = idsYaAsignados();
+  return miembros.filter(m => {
+    if (yaEste.has(m.id)) return false;           // ya salió este mes
+    const hist = gxp[m.id] || [];
+    const posEnCiclo = hist.length % 3;
+    const yaCiclo = posEnCiclo > 0 ? hist.slice(-posEnCiclo) : [];
+    return !yaCiclo.includes(gasto);              // no pagó ese gasto en este ciclo
+  });
+}
+
+// Grupo del mes (3 personas) — solo informativo para el banner
+function grupoMes() {
+  const n = miembros.length; if (!n) return [];
+  return [0,1,2].map(i => miembros[(punteroGrupo + i) % n]);
+}
+function grupoSig() {
+  const n = miembros.length; if (!n) return [];
+  const p2 = (punteroGrupo + 3) % n;
+  return [0,1,2].map(i => miembros[(p2 + i) % n]);
+}
+
+// ════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════
+function tab(id, btn) {
+  document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('activa'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('activo'));
+  document.getElementById('tab-'+id).classList.add('activa');
+  if(btn) btn.classList.add('activo');
+  if(id==='miembros')  renderTabla();
+  if(id==='resumen')   renderResumen();
+  if(id==='config')    cargarMontos();
+  if(id==='sorteo')    { renderSorteo(); dibujarRuleta(); }
+  if(id==='historial') { renderHistorial(); renderCiclo(); }
+}
+
+// ════════════════════════════════════════════════
+// MONTOS
+// ════════════════════════════════════════════════
+function cargarMontos() {
+  document.getElementById('m-luz').value   = montos.luz;
+  document.getElementById('m-cable').value = montos.cable;
+  document.getElementById('m-cel').value   = montos.cel;
+}
+function saveMontos() {
+  montos = {
+    luz:   parseFloat(document.getElementById('m-luz').value)   || 0,
+    cable: parseFloat(document.getElementById('m-cable').value) || 0,
+    cel:   parseFloat(document.getElementById('m-cel').value)   || 0,
+  };
+  save();
+  const ok = document.getElementById('montos-ok');
+  ok.style.display='block'; setTimeout(()=>ok.style.display='none',2000);
+}
+
+function resetearDatos() {
+  if (!confirm(
+    '⚠️ ¿Borrar el historial de meses, los ciclos de gastos y el sorteo actual?\n\n' +
+    'Los participantes y montos se conservan.\n' +
+    'Esta acción no se puede deshacer.'
+  )) return;
+  historial  = [];
+  gxp        = {};
+  sorteoMes  = {};
+  punteroGrupo = 0;
+  gastoElegido = null;
+  save();
+  renderTabla();
+  alert('✅ Datos reseteados. Historial y ciclos borrados.');
+}
+
+// ════════════════════════════════════════════════
+// SINCRONIZAR TODO A GOOGLE SHEETS
+// ════════════════════════════════════════════════
+function sincronizarTodo() {
+  const btn    = document.getElementById('btn-sync');
+  const status = document.getElementById('sync-status');
+  btn.disabled = true;
+  btn.textContent = '📤 Enviando…';
+  status.innerHTML = '<span style="color:#aaa">Conectando con Google Sheets…</span>';
+
+  enviarASheets('sincronizarTodo', {})
+    .then(res => {
+      btn.disabled = false;
+      btn.textContent = '🔄 Sincronizar todo a Sheets ahora';
+      if (res.ok) {
+        status.innerHTML = '<span style="color:#80ffdb">✅ Sincronizado correctamente — ' + new Date().toLocaleTimeString('es-PE') + '</span>';
+      } else {
+        status.innerHTML = '<span style="color:#ff8080">⚠️ Error: ' + (res.error || 'Sin conexión') + '</span>';
+      }
+    });
+}
+
+// ════════════════════════════════════════════════
+// MIEMBROS
+// ════════════════════════════════════════════════
+function renderTabla() {
+  document.getElementById('tbody-m').innerHTML = miembros.map((m,i) => {
+    const c = m.genero==='H' ? 100 : 50;
+    const hist = (gxp[m.id]||[]).slice(-6).map(g=>`<span class="cc cc-${g}">${GL[g]}</span>`).join('') || '—';
+    return `<tr>
+      <td>${i+1}</td>
+      <td>${m.nombre} <button onclick="editN(${m.id})" style="background:none;border:none;color:#aac4ff;cursor:pointer;font-size:.82em">✏️</button></td>
+      <td><span class="badge ${m.genero==='H'?'bh':'bm'}">${m.genero==='H'?'👨 H':'👩 M'}</span></td>
+      <td><span class="${m.tipo==='hijo'?'hijo-tag':'nieto-tag'}">${m.tipo==='hijo'?'🏠 Hijo/a':'⭐ Nieto/a'}</span></td>
+      <td class="${m.genero==='H'?'ch':'cm'}">S/ ${c}</td>
+      <td>${hist}</td>
+      <td>${m.tipo==='nieto'?`<button class="btn-del" onclick="delM(${m.id})">✕</button>`:''}</td>
+    </tr>`;
+  }).join('');
+}
+function addMiembro() {
+  const n=document.getElementById('inp-n').value.trim();
+  if(!n){alert('⚠️ Escribe el nombre.');return;}
+  miembros.push({id:Date.now(),nombre:n,genero:document.getElementById('inp-g').value,tipo:document.getElementById('inp-t').value});
+  save(); renderTabla(); document.getElementById('inp-n').value='';
+}
+function delM(id) {
+  if(!confirm('¿Quitar este integrante?')) return;
+  miembros=miembros.filter(m=>m.id!==id); delete gxp[id]; save(); renderTabla();
+}
+function editN(id) {
+  const m=miembros.find(x=>x.id===id); if(!m) return;
+  const v=prompt('Nuevo nombre:',m.nombre); if(!v||!v.trim()) return;
+  m.nombre=v.trim(); save(); renderTabla();
+}
+
+// ════════════════════════════════════════════════
+// RESUMEN
+// ════════════════════════════════════════════════
+function renderResumen() {
+  const nh=miembros.filter(m=>m.genero==='H').length;
+  const nm=miembros.filter(m=>m.genero==='M').length;
+  const rec=nh*100+nm*50;
+  document.getElementById('rg').innerHTML=`
+    <div class="ri"><div class="num">${miembros.length}</div><div class="et">Participantes</div></div>
+    <div class="ri"><div class="num" style="color:#60b4ff">${nh}</div><div class="et">👨 × S/100</div></div>
+    <div class="ri"><div class="num" style="color:#ff80b4">${nm}</div><div class="et">👩 × S/50</div></div>
+    <div class="ri" style="border:2px solid #FFD700"><div class="num">S/ ${rec}</div><div class="et">💝 Para los padres</div></div>
+    <div class="ri" style="border:2px solid #aac4ff"><div class="num" style="font-size:1.3em">S/ ${montos.luz+montos.cable+montos.cel}</div><div class="et">🏠 Total gastos fijos</div></div>`;
+  document.getElementById('tbody-r').innerHTML=miembros.map(m=>{
+    const c=m.genero==='H'?100:50;
+    return `<tr><td>${m.nombre}</td><td><span class="badge ${m.genero==='H'?'bh':'bm'}">${m.genero==='H'?'👨':'👩'}</span></td><td class="${m.genero==='H'?'ch':'cm'}">S/ ${c}</td></tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════
+// SORTEO — LÓGICA PRINCIPAL
+// Flujo: elegir gasto → (opciones voluntario) → girar ruleta → ganador sale
+// La ruleta tiene a TODOS los disponibles para ese gasto
+// ════════════════════════════════════════════════
+function renderSorteo() {
+  document.getElementById('lbl-mes').textContent = mesLabel();
+  // Montos en botones
+  document.getElementById('lbl-mluz').textContent   = `S/ ${montos.luz}`;
+  document.getElementById('lbl-mcable').textContent = `S/ ${montos.cable}`;
+  document.getElementById('lbl-mcel').textContent   = `S/ ${montos.cel}`;
+
+  // Estado botones gasto
+  GASTOS.forEach(g => {
+    const btn = document.getElementById('gbtn-'+g);
+    btn.className = 'gbtn '+g;
+    if (sorteoMes[g]) btn.classList.add('hecho');
+    else if (gastoElegido===g) btn.classList.add('activo-'+g);
+  });
+
+  renderTurnoBanner();
+  renderResultados();
+}
+
+function renderTurnoBanner() {
+  const yaIds  = idsYaAsignados();
+  const yaList = miembros.filter(m => yaIds.has(m.id));
+
+  // Si no ha salido nadie todavía, no mostrar grupo predefinido
+  if (yaList.length === 0) {
+    document.getElementById('turno-banner').innerHTML = `
+      <div class="turno-banner">
+        <div class="tb-tit">🎯 Listo para sortear — elige un gasto y gira la ruleta</div>
+        <div style="color:#888;font-size:.82em;margin-top:4px">
+          Los 3 gastos se sortean uno por uno. Quien salga en cada giro no vuelve a participar en los siguientes del mismo mes.
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Mostrar quiénes ya salieron este mes
+  document.getElementById('turno-banner').innerHTML = `
+    <div class="turno-banner">
+      <div class="tb-tit">✅ Ya sorteados este mes:</div>
+      <div class="turno-chips">
+        ${yaList.map(m => {
+          const v = Object.values(sorteoMes).find(v => v.id === m.id);
+          return `<div class="tc ya">
+            <span class="tcn">${m.nombre.split(' ')[0]}</span>
+            <span class="tcs">${v ? GL[v.gasto] : ''}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="color:#888;font-size:.78em;margin-top:6px">
+        Estas personas ya no aparecen en la ruleta este mes.
+      </div>
+    </div>`;
+}
+
+function renderResultados() {
+  document.getElementById('res-row').innerHTML = GASTOS.map(g => {
+    const v = sorteoMes[g];
+    return `<div class="res-box">
+      <div class="rl">${GL[g]}</div>
+      <div class="rn">${v ? v.nombre.split(' ')[0] : '— pendiente —'}</div>
+      ${v ? `
+        <div class="rm ${g}">S/ ${v.monto}</div>
+        <div class="rv">${v.modo==='voluntario'?'✋ Voluntario':'🎡 Ruleta'}</div>
+        <button onclick="anularGasto('${g}')"
+          style="margin-top:8px;background:rgba(255,80,80,.18);border:1px solid #ff5050;color:#ff8080;
+                 border-radius:8px;padding:4px 12px;cursor:pointer;font-size:.78em;width:100%">
+          ✕ Anular y repetir
+        </button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function anularGasto(gasto) {
+  if (!confirm(`¿Anular el resultado de ${GL[gasto]} y volver a sortear?`)) return;
+  delete sorteoMes[gasto];
+  gastoElegido = null;
+  document.getElementById('btn-girar').disabled = true;
+  document.getElementById('info-sorteo').textContent = `↩️ ${GL[gasto]} anulado — elige el gasto de nuevo`;
+  document.getElementById('vol-box').style.display = 'none';
+  save();
+  renderSorteo();
+  dibujarRuleta();
+}
+
+// ─── Elegir gasto ───────────────────────────────
+function elegirGasto(gasto) {
+  if (sorteoMes[gasto]) return; // ya sorteado
+  gastoElegido = gasto;
+
+  const disp = disponiblesParaGasto(gasto);
+  if (disp.length === 0) {
+    alert(`⚠️ No hay participantes disponibles para ${GL[gasto]} este mes.\nTodos ya pagaron ese gasto en este ciclo o ya salieron este mes.`);
+    gastoElegido = null; return;
+  }
+
+  // Voluntario box
+  const vbox = document.getElementById('vol-box');
+  document.getElementById('vol-label').textContent = `¿Alguien se ofrece a pagar ${GL[gasto]} (S/ ${montos[gasto]})?`;
+  document.getElementById('vol-sel').innerHTML =
+    '<option value="">— Solo girar la ruleta —</option>' +
+    disp.map(m=>`<option value="${m.id}">${m.nombre}</option>`).join('');
+  vbox.style.display = 'block';
+
+  document.getElementById('btn-girar').disabled = false;
+  document.getElementById('info-sorteo').textContent =
+    `Sorteando ${GL[gasto]} · ${disp.length} participante${disp.length>1?'s':''} disponible${disp.length>1?'s':''}`;
+
+  renderSorteo();
+  dibujarRuleta();
+}
+
+// ─── Voluntario ─────────────────────────────────
+function confirmarVoluntario() {
+  const sel = document.getElementById('vol-sel');
+  const id  = parseInt(sel.value);
+  if (!id || !gastoElegido) return;
+  const m = miembros.find(x=>x.id===id);
+  if (!m) return;
+
+  sorteoMes[gastoElegido] = {id:m.id, nombre:m.nombre, modo:'voluntario', monto:montos[gastoElegido]};
+  save();
+  document.getElementById('info-sorteo').textContent = `✅ ${m.nombre.split(' ')[0]} → ${GL[gastoElegido]} (voluntario)`;
+  document.getElementById('vol-box').style.display = 'none';
+  document.getElementById('btn-girar').disabled = true;
+  gastoElegido = null;
+  renderSorteo(); dibujarRuleta();
+}
+
+// ─── Ruleta ─────────────────────────────────────
+// La ruleta SIEMPRE muestra a todos los disponibles para el gasto elegido
+function listaRuleta() {
+  if (!gastoElegido) return miembros; // sin gasto elegido: muestra todos (estado neutro)
+  return disponiblesParaGasto(gastoElegido);
+}
+
+function dibujarRuleta(resaltado) {
+  const canvas = document.getElementById('canvas-ruleta');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width/2, cy = canvas.height/2, r = cx-10;
+  const lista = listaRuleta();
+  const n = lista.length;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if (n===0) {
+    ctx.fillStyle='rgba(255,255,255,.08)';
+    ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#888';ctx.font='13px Segoe UI';ctx.textAlign='center';
+    ctx.fillText('Sin disponibles',cx,cy-6);ctx.fillText('para este gasto',cx,cy+10);
+    return;
+  }
+
+  const paso = 2*Math.PI/n;
+  lista.forEach((m,i) => {
+    const ini = angulo + i*paso, fin = ini+paso;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,ini,fin);ctx.closePath();
+    ctx.fillStyle = i===resaltado ? '#FFD700' : COLORES[i%COLORES.length];
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=2;ctx.stroke();
+
+    ctx.save();
+    ctx.translate(cx,cy);ctx.rotate(ini+paso/2);
+    ctx.textAlign='right';
+    ctx.fillStyle = i===resaltado ? '#1a1a2e' : '#1a1a2e';
+
+    // Nombre
+    const partes = m.nombre.split(' ');
+    const p1 = partes[0];                      // primer nombre
+    const p2 = partes[1]||'';                  // primer apellido
+    ctx.font = `bold ${n>14?10:12}px Segoe UI,Arial`;
+    ctx.fillText(p1, r-10, n>8 ? -4 : -5);
+    if (p2) { ctx.font = `${n>14?9:10}px Segoe UI,Arial`; ctx.fillText(p2, r-10, n>8 ? 7 : 9); }
+    ctx.restore();
+  });
+
+  // Centro
+  ctx.beginPath();ctx.arc(cx,cy,22,0,2*Math.PI);
+  ctx.fillStyle='#1a1a2e';ctx.fill();
+  ctx.strokeStyle='#FFD700';ctx.lineWidth=3;ctx.stroke();
+}
+
+function girar() {
+  const lista = listaRuleta();
+  if (girando || !gastoElegido || lista.length===0) return;
+  girando = true;
+  document.getElementById('btn-girar').disabled = true;
+  document.getElementById('info-sorteo').textContent = '🎡 Girando…';
+  document.getElementById('vol-box').style.display = 'none';
+
+  const vueltas = 5 + Math.random()*5;
+  const extra   = Math.random()*2*Math.PI;
+  const total   = vueltas*2*Math.PI + extra;
+  const dur     = 4000;
+  const t0      = performance.now();
+  const ang0    = angulo;
+
+  function frame(now) {
+    const p = Math.min((now-t0)/dur, 1);
+    const e = 1 - Math.pow(1-p, 3);           // ease-out cúbico
+    angulo = ang0 + total*e;
+
+    const n   = lista.length;
+    const pas = 2*Math.PI/n;
+    // Puntero en la parte SUPERIOR del canvas (−π/2)
+    const norm = ((-Math.PI/2 - angulo) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+    const idx  = Math.floor(norm/pas) % n;
+
+    if (p < 1) { dibujarRuleta(idx); requestAnimationFrame(frame); }
+    else        { dibujarRuleta(idx); elegirGanador(lista[idx]); girando=false; }
+  }
+  requestAnimationFrame(frame);
+}
+
+function elegirGanador(m) {
+  sorteoMes[gastoElegido] = {id:m.id, nombre:m.nombre, modo:'ruleta', monto:montos[gastoElegido]};
+  save();
+  document.getElementById('info-sorteo').textContent =
+    `🎉 ¡${m.nombre.split(' ')[0]} pagará ${GL[gastoElegido]} — S/ ${montos[gastoElegido]}!`;
+  document.getElementById('btn-girar').disabled = true;
+  gastoElegido = null;
+  renderSorteo(); dibujarRuleta();
+}
+
+// ════════════════════════════════════════════════
+// GUARDAR MES
+// ════════════════════════════════════════════════
+// GOOGLE SHEETS — URL del Apps Script
+// ════════════════════════════════════════════════
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw0oSy3KK4_vuMM6e-ECyHUDUmyDD8tKyuPjNerQ0vib7YAi5IyiY_a4df6pLS2NM8SvA/exec';
+
+function enviarASheets(accion, extraDatos) {
+  const payload = {
+    accion,
+    miembros,
+    montos,
+    historial,
+    gxp,
+    ...extraDatos
+  };
+  return fetch(SHEETS_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  .then(r => r.json())
+  .catch(() => ({ ok: false, error: 'Sin conexión a internet' }));
+}
+
+// ════════════════════════════════════════════════
+// GUARDAR MES
+// ════════════════════════════════════════════════
+function guardarMes() {
+  const asignados = Object.keys(sorteoMes).length;
+  if (asignados === 0) { alert('⚠️ No hay ningún sorteo realizado este mes.'); return; }
+  if (asignados < 3) {
+    if (!confirm(`Solo hay ${asignados} de 3 gastos sorteados.\n¿Guardar de todas formas?`)) return;
+  }
+
+  const M=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const hoy=new Date(); const etq=`${M[hoy.getMonth()]} ${hoy.getFullYear()}`;
+
+  GASTOS.forEach(g => {
+    const v = sorteoMes[g];
+    if (!v) return;
+    if (!gxp[v.id]) gxp[v.id]=[];
+    gxp[v.id].push(g);
+  });
+
+  const nh=miembros.filter(m=>m.genero==='H').length;
+  const nm=miembros.filter(m=>m.genero==='M').length;
+
+  const entradaMes = {
+    mes: etq,
+    fecha: hoy.toLocaleDateString('es-PE'),
+    recaudo: nh*100+nm*50,
+    participantes: miembros.length,
+    sorteo: {...sorteoMes},
+  };
+
+  historial.unshift(entradaMes);
+  punteroGrupo = (punteroGrupo + 3) % miembros.length;
+  sorteoMes = {};
+  gastoElegido = null;
+  save();
+
+  document.getElementById('btn-girar').disabled = true;
+  document.getElementById('info-sorteo').textContent = 'Elige un gasto arriba para comenzar';
+  document.getElementById('vol-box').style.display = 'none';
+
+  // Enviar a Google Sheets
+  const btnGuardar = document.querySelector('.btn-save');
+  if (btnGuardar) { btnGuardar.textContent = '📤 Enviando a Sheets…'; btnGuardar.disabled = true; }
+
+  enviarASheets('guardarMes', { sorteo: entradaMes.sorteo, mes: entradaMes.mes, fecha: entradaMes.fecha, recaudo: entradaMes.recaudo, participantes: entradaMes.participantes })
+    .then(res => {
+      if (btnGuardar) { btnGuardar.textContent = '💾 Cerrar mes y guardar en historial'; btnGuardar.disabled = false; }
+      const icono = res.ok ? '☁️ Enviado a Sheets ✅' : '⚠️ Guardado local (sin internet)';
+      const proximo = grupoMes().map(m=>m.nombre.split(' ')[0]).join(', ');
+      alert(`✅ ${etq} guardado.\n${icono}\n\nPróximo mes le toca a: ${proximo}`);
+    });
+
+  // Ir a historial de inmediato
+  document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('activa'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('activo'));
+  document.getElementById('tab-historial').classList.add('activa');
+  document.querySelectorAll('.tab-btn').forEach(b=>{if(b.textContent.includes('Historial'))b.classList.add('activo');});
+  renderHistorial(); renderCiclo();
+}
+
+// ════════════════════════════════════════════════
+// HISTORIAL
+// ════════════════════════════════════════════════
+function renderHistorial() {
+  const c = document.getElementById('hist-lista');
+  if (!historial.length) { c.innerHTML='<p style="color:#aaa;text-align:center;padding:20px">Sin registros aún.</p>'; return; }
+  c.innerHTML = historial.map((h,i) => {
+    const chips = GASTOS.map(g => {
+      const v = h.sorteo?.[g];
+      if (!v) return '';
+      const icon = v.modo==='voluntario'?'✋':'🎡';
+      return `<span class="sc sc-${g}">${v.nombre.split(' ')[0]} → ${GL[g]} S/${v.monto} ${icon}</span>`;
+    }).join('');
+    return `<div class="mes-card">
+      <div class="mh"><h3>📅 ${h.mes}</h3><span style="color:#aaa;font-size:.8em">${h.fecha} · ${h.participantes} personas</span></div>
+      <div class="mrec">💰 Recaudo cuotas: <strong>S/ ${h.recaudo}</strong></div>
+      <div class="schips">${chips||'—'}</div>
+      <button onclick="delMes(${i})" style="margin-top:9px;background:none;border:none;color:#ff8080;cursor:pointer;font-size:.8em">🗑 Eliminar</button>
+    </div>`;
+  }).join('');
+}
+function delMes(i) {
+  if(!confirm('¿Eliminar este registro?')) return;
+  historial.splice(i,1); save(); renderHistorial();
+}
+
+// ════════════════════════════════════════════════
+// CICLO POR PERSONA
+// ════════════════════════════════════════════════
+function renderCiclo() {
+  const c = document.getElementById('ciclo-tabla');
+  const rows = miembros.map(m => {
+    const h = gxp[m.id]||[];
+    if (!h.length) return `<tr><td>${m.nombre.split(' ')[0]}</td><td colspan="2" style="color:#555;font-size:.8em">Sin historial</td></tr>`;
+    // Agrupar en ciclos de 3
+    const ciclos=[];
+    for(let i=0;i<h.length;i+=3) ciclos.push(h.slice(i,i+3));
+    const chips = ciclos.map((c,ci)=>
+      `<span style="color:#555;font-size:.72em">C${ci+1}:</span>${c.map(g=>`<span class="cc cc-${g}">${GL[g]}</span>`).join('')}`
+    ).join(' &nbsp;');
+    const posC = h.length%3;
+    const yaCiclo = posC>0 ? h.slice(-posC) : [];
+    const pend = GASTOS.filter(g=>!yaCiclo.includes(g)).map(g=>`<span class="cc cc-${g}">${GL[g]}</span>`).join('') || '<span style="color:#80ffdb;font-size:.8em">Ciclo completo ✓</span>';
+    return `<tr><td style="white-space:nowrap">${m.nombre.split(' ')[0]}</td><td>${chips}</td><td>${pend}</td></tr>`;
+  }).join('');
+  c.innerHTML=`<table><thead><tr><th>Persona</th><th>Historial</th><th>Pendiente en ciclo</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ════════════════════════════════════════════════
+// ARRANQUE
+// ════════════════════════════════════════════════
+
+// Limpiar claves de versiones anteriores del sistema
+['fm_miembros','fm_historial','fm_sorteo_actual','fm_rotacion_ptr',
+ 'fm_montos','fm_persona_ptr','fm_gastos_persona','fm_bienvenida','fm_bienvenida2']
+  .forEach(k => localStorage.removeItem(k));
+
+cargarMontos();
+renderTabla();
+
+// Bienvenida primera vez
+if (!localStorage.getItem('fm2_ok')) {
+  localStorage.setItem('fm2_ok','1');
+  setTimeout(()=>alert(
+    '👋 ¡Bienvenido al Fondo Familiar Ramos Arrieta!\n\n' +
+    '🎡 CÓMO USAR EL SORTEO:\n' +
+    '1. Ve a "🎡 Sorteo"\n' +
+    '2. Elige el gasto (Luz, Cable o Celular)\n' +
+    '3. La ruleta muestra a todos los disponibles\n' +
+    '4. Pulsa ¡Girar! — sale la persona\n' +
+    '5. Repite para los 3 gastos\n' +
+    '6. Guarda el mes\n\n' +
+    '📌 Quien salió ya no puede salir de nuevo ese mes.\n' +
+    '📌 Quien pagó un gasto no puede repetirlo hasta completar el ciclo de 3 meses.\n\n' +
+    '⚙️ Edita los montos reales en la pestaña "Gastos".'
+  ),600);
+}
+</script>
+</body>
+</html>
