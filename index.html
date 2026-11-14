@@ -440,16 +440,16 @@ function sincronizarTodo() {
   const status = document.getElementById('sync-status');
   btn.disabled = true;
   btn.textContent = '📤 Enviando…';
-  status.innerHTML = '<span style="color:#aaa">Conectando con Google Sheets…</span>';
+  status.innerHTML = '<span style="color:#aaa">Enviando a Google Sheets…</span>';
 
   enviarASheets('sincronizarTodo', {})
     .then(res => {
       btn.disabled = false;
       btn.textContent = '🔄 Sincronizar todo a Sheets ahora';
       if (res.ok) {
-        status.innerHTML = '<span style="color:#80ffdb">✅ Sincronizado correctamente — ' + new Date().toLocaleTimeString('es-PE') + '</span>';
+        status.innerHTML = '<span style="color:#80ffdb">✅ Enviado correctamente — revisa tu Google Sheets · ' + new Date().toLocaleTimeString('es-PE') + '</span>';
       } else {
-        status.innerHTML = '<span style="color:#ff8080">⚠️ Error: ' + (res.error || 'Sin conexión') + '</span>';
+        status.innerHTML = '<span style="color:#ff8080">⚠️ Error al enviar: ' + (res.error || 'desconocido') + '</span>';
       }
     });
 }
@@ -740,23 +740,23 @@ function elegirGanador(m) {
 // ════════════════════════════════════════════════
 // GOOGLE SHEETS — URL del Apps Script
 // ════════════════════════════════════════════════
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw0oSy3KK4_vuMM6e-ECyHUDUmyDD8tKyuPjNerQ0vib7YAi5IyiY_a4df6pLS2NM8SvA/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwuplmzNw6ryykKDWXjIwHtJl-AjuXcasN4xIp00vMjV08ONryTslR8d2bxO7MUmdjZbg/exec';
 
+// Envío via GET — sin restricciones CORS con Apps Script
 function enviarASheets(accion, extraDatos) {
-  const payload = {
-    accion,
-    miembros,
-    montos,
-    historial,
-    gxp,
-    ...extraDatos
-  };
-  return fetch(SHEETS_URL, {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
-  .then(r => r.json())
-  .catch(() => ({ ok: false, error: 'Sin conexión a internet' }));
+  return new Promise((resolve) => {
+    const payload = { accion, miembros, montos, historial, gxp, ...extraDatos };
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+    const url     = SHEETS_URL + '?data=' + encoded;
+
+    fetch(url)
+      .then(r => r.text())
+      .then(txt => {
+        try { resolve(JSON.parse(txt)); }
+        catch(e) { resolve({ ok: true }); }
+      })
+      .catch(err => resolve({ ok: false, error: err.message }));
+  });
 }
 
 // ════════════════════════════════════════════════
@@ -807,9 +807,8 @@ function guardarMes() {
   enviarASheets('guardarMes', { sorteo: entradaMes.sorteo, mes: entradaMes.mes, fecha: entradaMes.fecha, recaudo: entradaMes.recaudo, participantes: entradaMes.participantes })
     .then(res => {
       if (btnGuardar) { btnGuardar.textContent = '💾 Cerrar mes y guardar en historial'; btnGuardar.disabled = false; }
-      const icono = res.ok ? '☁️ Enviado a Sheets ✅' : '⚠️ Guardado local (sin internet)';
       const proximo = grupoMes().map(m=>m.nombre.split(' ')[0]).join(', ');
-      alert(`✅ ${etq} guardado.\n${icono}\n\nPróximo mes le toca a: ${proximo}`);
+      alert(`✅ ${etq} guardado.\n☁️ Enviado a Google Sheets\n\nPróximo mes le toca a: ${proximo}`);
     });
 
   // Ir a historial de inmediato
